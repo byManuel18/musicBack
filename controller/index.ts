@@ -1,0 +1,1 @@
+export * as RoleController from './role.controller';
