@@ -11,9 +11,13 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String,
-        default: 'imgDefault'
+        default: 'imgUserDefault.png'
     },
     active: {
+        type: Boolean,
+        default: true
+    },
+    public: {
         type: Boolean,
         default: false
     },
@@ -28,6 +32,7 @@ const userSchema = new Schema({
     },
     lastPassword: {
         type: String,
+        default: null
     },
     created: {
         type: Date
@@ -36,9 +41,10 @@ const userSchema = new Schema({
         type: Date
     },
     lastPasswordChange: {
-        type: Date
+        type: Date,
+        default: null
     },
-    role: {
+    rol: {
         type: Schema.Types.ObjectId,
         ref: 'Role'
     }
@@ -47,19 +53,20 @@ const userSchema = new Schema({
 userSchema.pre<I_User>('save', async function (next) {
     this.created = new Date();
     this.lastLogin = new Date();
+    this.password = Password.encriptar(this.password);
     const rolToSet = await RoleController.existRole('USER_ROL');
     if (rolToSet) {
-        this.role = rolToSet._id.toString();
+        this.rol = rolToSet._id.toString();
     } else {
         const rolCreated = await RoleController.createRole('USER_ROL');
-        this.role = rolCreated._id.toString();
+        this.rol = rolCreated._id.toString();
     }
     next();
 });
 
 
-userSchema.method('comparePasword', function (password: string = '') {
-    return Password.isEquals(password, this.password);
+userSchema.method('comparePasword', function (passwordToCompare: string = '') {
+    return Password.isEquals(passwordToCompare, this.password);
 })
 
 export const User = model<I_User>('User', userSchema);

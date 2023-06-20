@@ -8,8 +8,9 @@ export interface I_User extends Document {
     lastPasswordChange: Date,
     avatar: string,
     active: boolean,
+    public: boolean,
     created: Date,
     lastLogin: Date,
-    role: string,
+    rol: string,
     comparePasword(password: string): boolean
 }

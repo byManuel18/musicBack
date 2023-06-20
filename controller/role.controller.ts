@@ -6,5 +6,5 @@ export const existRole = async (role: string) => {
 }
 
 export const createRole = async (role: string) => {
-    return await Role.create({ role: role });
+    return await Role.create({ rol: role });
 }
