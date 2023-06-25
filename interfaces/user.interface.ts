@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface I_User extends Document {
     userName: string,
@@ -11,6 +11,6 @@ export interface I_User extends Document {
     public: boolean,
     created: Date,
     lastLogin: Date,
-    rol: string,
+    rol: Types.ObjectId;
     comparePasword(password: string): boolean
 }
