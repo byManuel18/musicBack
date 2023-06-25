@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { I_User } from '../../interfaces';
-import { Password } from '../../utils';
+import { FolderUtils, Password } from '../../utils';
 import { RoleController } from '../../controller';
 
 const userSchema = new Schema({
@@ -61,6 +61,7 @@ userSchema.pre<I_User>('save', async function (next) {
         const rolCreated = await RoleController.createRole('USER_ROL');
         this.rol = rolCreated._id;
     }
+    FolderUtils.createFolder(this._id.toString(), 'User');
     next();
 });
 
