@@ -56,10 +56,10 @@ userSchema.pre<I_User>('save', async function (next) {
     this.password = Password.encriptar(this.password);
     const rolToSet = await RoleController.existRole('USER_ROL');
     if (rolToSet) {
-        this.rol = rolToSet._id.toString();
+        this.rol = rolToSet._id;
     } else {
         const rolCreated = await RoleController.createRole('USER_ROL');
-        this.rol = rolCreated._id.toString();
+        this.rol = rolCreated._id;
     }
     next();
 });

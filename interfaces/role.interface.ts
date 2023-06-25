@@ -1,3 +1,5 @@
-export interface I_Role {
+import { Document } from "mongoose";
+
+export interface I_Role extends Document {
     rol: string;
 }
