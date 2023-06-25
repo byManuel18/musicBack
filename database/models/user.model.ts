@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { I_User } from '../../interfaces';
 import { FolderUtils, Password } from '../../utils';
 import { RoleController } from '../../controller';
+import { Favorite } from './favorite.model';
 
 const userSchema = new Schema({
     userName: {
@@ -61,6 +62,7 @@ userSchema.pre<I_User>('save', async function (next) {
         const rolCreated = await RoleController.createRole('USER_ROL');
         this.rol = rolCreated._id;
     }
+    await Favorite.create({ user: this._id });
     FolderUtils.createFolder(this._id.toString(), 'User');
     next();
 });
