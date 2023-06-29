@@ -7,12 +7,13 @@ inicializeDB().then(async (e) => {
     // }
     // const updated = await Playlist.findById('649caf3f289015f9c7f55483');
     // const nuevo = await updated?.updateOne(
-    //     { $addToSet: { songs: ['649cbe167b6d72f141f37779', '649ccf2e34dabe33bfc56d2e'] }, $set: { name: 'sdsdsd' } },
+    //     { $pull: { songs: { $in: ['649893ce3482491f13552ac1'] } }, $set: { name: 'sdsdsd' } },
+    //     // { $addToSet: { songs: ['649cbe167b6d72f141f37779', '649ccf2e34dabe33bfc56d2e'] }, $set: { name: 'sdsdsd' } },
     //     { new: true })
     // console.log(updated);
     // console.log(nuevo);
 
-    // { $pull: { songs: { $in: ['649cbe167b6d72f141f37779', '649ccf2e34dabe33bfc56d2e'] } }, $set: { name: 'sdsdsd' } },
+    // { $pull: { songs: { $in: ['649893ce3482491f13552ac1'] } }, $set: { name: 'sdsdsd' } },
 
     // const f = await Playlist.findById('6498943a7f1d817e3ae63c35');
     // console.log(f);

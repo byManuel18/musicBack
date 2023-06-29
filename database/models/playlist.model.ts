@@ -1,48 +1,6 @@
 import { Query, Schema, Types, UpdateQuery, model } from 'mongoose';
 import { I_Playlist } from '../../interfaces';
-
-const updateSizeAfterUpdate = async (query: Query<any, I_Playlist>) => {
-    query.set({ lastUpdate: new Date() });
-    const updateFields = query.getUpdate() as UpdateQuery<I_Playlist> | null;
-
-    const playlistId = query.getFilter()['_id'];
-    const playlits = await Playlist.findById(playlistId);
-    if (playlits) {
-        const currentSongs = playlits.songs;
-        if (updateFields) {
-            if (updateFields.$addToSet && updateFields.$addToSet.songs) {
-                const songsToAdd: string[] = []
-                updateFields.$addToSet.songs.forEach((s: string) => {
-                    if (!currentSongs.some((cs) => {
-                        return cs.toString() === s;
-                    })) {
-                        songsToAdd.push(s);
-                    }
-                });
-                query.set({ size: (currentSongs.length + songsToAdd.length) });
-            } else if (updateFields.$pull && updateFields.$pull.songs) {
-                const songsToDelete: string[] = [];
-                let searchFields: string[] = [];
-                if (updateFields.$pull.songs.$in) {
-                    searchFields = updateFields.$pull.songs.$in;
-                } else {
-                    searchFields = [...updateFields.$pull.songs];
-                }
-                searchFields.forEach((s: string) => {
-                    if (currentSongs.some((cs) => {
-                        return cs.toString() === s;
-                    })) {
-                        songsToDelete.push(s);
-                    }
-                });
-                console.log(songsToDelete);
-
-                query.set({ size: (currentSongs.length - songsToDelete.length) });
-            }
-        }
-
-    }
-}
+import { DbUtils } from '../../utils'
 
 const playlistSchema = new Schema({
     name: {
@@ -98,7 +56,8 @@ playlistSchema.pre<I_Playlist>('save', function (next) {
 });
 
 playlistSchema.pre(['updateOne', 'findOneAndUpdate'], async function (this: Query<any, I_Playlist>, next) {
-    await updateSizeAfterUpdate(this);
+    this.set({ lastUpdate: new Date() });
+    await DbUtils.updateSizeAfterUpdate<I_Playlist>(this, 'songs', Playlist);
     next();
 });
 
