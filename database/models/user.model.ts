@@ -64,6 +64,7 @@ userSchema.pre<I_User>('save', async function (next) {
     }
     await Favorite.create({ user: this._id });
     FolderUtils.createFolder(this._id.toString(), 'User');
+    FolderUtils.createFolder(this._id.toString(), 'Playlist');
     next();
 });
 
