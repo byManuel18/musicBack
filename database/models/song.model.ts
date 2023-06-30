@@ -33,7 +33,7 @@ const songSchema = new Schema({
         require: [true, 'The duration is mandatory.']
     },
     gender: {
-        type: [{ type: Schema.Types.Mixed, unique: true, }],
+        type: [{ type: Schema.Types.Mixed }],
         ref: 'Gender',
         require: [true, 'The gender is mandatory.']
     }
