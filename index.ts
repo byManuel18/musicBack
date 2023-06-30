@@ -1,7 +1,11 @@
 import 'dotenv/config';
 import { inicializeDB } from './database/db';
 import { Playlist, Song } from './database/models';
+import { DbUtils } from './utils';
+import { Schema, Types } from 'mongoose';
+
 inicializeDB().then(async (e) => {
+
     // const pla = {
     //     name: 'dedede'
     // }

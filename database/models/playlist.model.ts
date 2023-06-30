@@ -35,14 +35,7 @@ const playlistSchema = new Schema({
 });
 
 playlistSchema.method('uniqueSongs', function (songs: Schema.Types.ObjectId[] = []) {
-    const newSetArr = new Set<Schema.Types.ObjectId>();
-    songs.forEach((element: Schema.Types.ObjectId) => {
-        const existe = [...newSetArr].some((item) => item.toString() === element.toString());
-        if (!existe) {
-            newSetArr.add(element);
-        }
-    });
-    return [...newSetArr];
+    return [...DbUtils.deleteDuplicated<Schema.Types.ObjectId>(songs, null, (a, b) => a.toString() === b.toString())];
 });
 
 playlistSchema.path('songs').set(function (songs: Types.ObjectId[]) {

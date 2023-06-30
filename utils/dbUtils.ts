@@ -40,3 +40,15 @@ export const updateSizeAfterUpdate = async <T>(query: Query<any, T>, key: keyof 
 
     }
 }
+
+
+export const deleteDuplicated = <T>(arrayToSee: T[], key?: keyof T | null, predicate?: (a: T, b: T) => boolean): Set<T> => {
+    const newSetArr = new Set<T>();
+    arrayToSee.forEach((element: T) => {
+        const existe = [...newSetArr].some((item) => predicate ? predicate(element, item) : key ? item[key] === element[key] : false);
+        if (!existe) {
+            newSetArr.add(element);
+        }
+    });
+    return newSetArr;
+}
