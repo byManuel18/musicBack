@@ -36,4 +36,8 @@ inicializeDB().then(async (e) => {
 
     // const playlist = await Playlist.create({ user: '6491fc1f6f813a68c385b9f0', name: 'Prueba', songs: ['6498939b1f59e5d0a3201889', '649893ce3482491f13552ac1', '649893ce3482491f13552ac1'] });
     // await Song.create({ album: 'primerAlbumddasdasdasdafasf', name: 'peneeeeeeeeee', type: 'mp3', author: 'Yo mismo', publicationDate: new Date(), duration: 123, gender: ['Rock'] })
+
+    // const a = await Favorite.create({ user: '6491fc1f6f813a68c385b9f0', songs: ['6498939b1f59e5d0a3201889', '649893ce3482491f13552ac1', '649893ce3482491f13552ac1'] });
+    // console.log(a);
+
 })  
