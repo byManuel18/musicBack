@@ -1,4 +1,4 @@
-import { Query, Schema, Types, UpdateQuery, model } from 'mongoose';
+import { Query, Schema, model } from 'mongoose';
 import { I_Playlist } from '../../interfaces';
 import { DbUtils } from '../../utils'
 
@@ -38,7 +38,7 @@ playlistSchema.method('uniqueSongs', function (songs: Schema.Types.ObjectId[] = 
     return [...DbUtils.deleteDuplicated<Schema.Types.ObjectId>(songs, null, (a, b) => a.toString() === b.toString())];
 });
 
-playlistSchema.path('songs').set(function (songs: Types.ObjectId[]) {
+playlistSchema.path('songs').set(function (songs: Schema.Types.ObjectId[]) {
     return playlistSchema.methods.uniqueSongs(songs);
 });
 
