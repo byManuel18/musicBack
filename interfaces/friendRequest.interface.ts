@@ -3,13 +3,13 @@ import { Document, Types } from "mongoose"
 export interface I_FriendRequest extends Document {
     sender: Types.ObjectId;
     receiver: Types.ObjectId;
-    status: Status;
+    status: typeof Status[keyof typeof Status];
     createdAt: Date;
 
 }
 
-export enum Status {
-    'pending',
-    'accepted',
-    'rejected'
-}
+export const Status = {
+    Pending: 'pending',
+    Accepted: 'accepted',
+    Rejected: 'rejected',
+} as const;
