@@ -1,0 +1,1 @@
+export { GeneralRoutes } from "./allRoutes";
