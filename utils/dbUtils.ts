@@ -1,4 +1,5 @@
 import { Model, Query, Types, UpdateQuery } from "mongoose";
+import { Friends } from "../database/models";
 
 
 export const updateSizeAfterUpdate = async <T>(query: Query<any, T>, key: keyof T, model: Model<T>) => {
@@ -51,4 +52,14 @@ export const deleteDuplicated = <T>(arrayToSee: T[], key?: keyof T | null, predi
         }
     });
     return newSetArr;
+}
+
+
+export const setFriends = async (target1: Types.ObjectId, target2: Types.ObjectId) => {
+    const target1FriendsList = await Friends.findOne({ user: target1 });
+    const target2FriendsList = await Friends.findOne({ user: target2 });
+    if (target1FriendsList && target2FriendsList) {
+        await target1FriendsList.updateOne({ $addToSet: { friends: [target2._id.toString()] } });
+        await target2FriendsList.updateOne({ $addToSet: { friends: [target1._id.toString()] } });
+    }
 }

@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { I_FriendRequest, Status } from '../../interfaces/friendRequest.interface';
+import { DbUtils } from "../../utils";
 
 
 const friendRequestSchema = new Schema({
@@ -32,6 +33,7 @@ friendRequestSchema.pre('save', async function (next) {
 
     if (sameRequest && sameRequest.status === Status.Pending) {
         await sameRequest.updateOne({ status: Status.Accepted });
+        await DbUtils.setFriends(this.sender, this.receiver);
         this.status = Status.Accepted;
     }
     next();

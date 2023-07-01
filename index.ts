@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import { inicializeDB } from './database/db';
-import { Favorite, FriendRequest, Playlist, Song, User } from './database/models';
+import { Favorite, FriendRequest, Friends, Playlist, Song, User } from './database/models';
 import { DbUtils } from './utils';
 import { Schema, Types } from 'mongoose';
 import { Status } from './interfaces/friendRequest.interface';
 
 inicializeDB().then(async (e) => {
 
-    // const fav = await Favorite.create({ user: '649fed80a1198fb8d8ffee0a' });
+    // const fav = await Friends.create({ user: '649fed80a1198fb8d8ffee0a' });
     // console.log(fav);
 
     // const userNew = await User.create({ email: 'dasds@dasd', userName: 'testetedo2', password: '123456' })
@@ -15,7 +15,7 @@ inicializeDB().then(async (e) => {
     // console.log(requesFr);
     // sender = 649fed80a1198fb8d8ffee0a
     // reciver = 6491fc1f6f813a68c385b9f0
-    // const sameRequest = await FriendRequest.findOne({ sender: '6491fc1f6f813a68c385b9f0', receiver: '649fed80a1198fb8d8ffee0a' });
+    // const sameRequest = await FriendRequest.create({ sender: '649fed80a1198fb8d8ffee0a', receiver: '6491fc1f6f813a68c385b9f0' });
     // console.log(sameRequest);
 
     // const pla = {
