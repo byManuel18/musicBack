@@ -1,3 +1,4 @@
+export { FriendRequest } from './friendRequest.model';
 export { Playlist } from "./playlist.model";
 export { Gender } from "./gender.model";
 export { Song } from "./song.model";
