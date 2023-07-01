@@ -3,6 +3,7 @@ import { I_User } from '../../interfaces';
 import { FolderUtils, Password } from '../../utils';
 import { RoleController } from '../../controller';
 import { Favorite } from './favorite.model';
+import { Friends } from './friends.model';
 
 const userSchema = new Schema({
     userName: {
@@ -63,6 +64,7 @@ userSchema.pre<I_User>('save', async function (next) {
         this.rol = rolCreated._id;
     }
     await Favorite.create({ user: this._id });
+    await Friends.create({ user: this._id });
     FolderUtils.createFolder(this._id.toString(), 'User');
     FolderUtils.createFolder(this._id.toString(), 'Playlist');
     next();
