@@ -1,1 +1,2 @@
-export { GeneralRoutes } from "./allRoutes";
+export { RouterCreator } from "./RouterCreator";
+export { GeneralRoutesConst } from "./allRoutesConst";

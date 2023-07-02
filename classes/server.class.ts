@@ -1,9 +1,12 @@
-import { createServer, Server } from 'https';
+import { createServer, Server } from 'http';
+import { Server as ServerIO } from 'socket.io';
+
 import cors from 'cors';
 import express, { Express } from 'express';
 import fileUpload from 'express-fileupload';
 import { inicializeDB } from '../database/db';
-import { GeneralRoutes } from '../routers';
+import { RouterCreator } from '../routers';
+import { socketsController } from '../controller';
 
 const PORT_SERVER = process.env.PORT_SERVE!;
 
@@ -12,20 +15,20 @@ export class ServerApp {
     app: Express;
     port: string;
     server: Server<any, any>;
-    io: Server;
+    io: ServerIO;
 
     constructor() {
 
         this.app = express();
         this.port = PORT_SERVER;
+        this.middlewares();
         this.server = createServer(this.app);
         this.io = require('socket.io')(this.server);
+        this.sockets();
+        this.routes();
 
         this.connectDB().then(_ => {
 
-            this.middlewares();
-            this.routes();
-            this.sockets();
             this.listen();
 
         }).catch(err => {
@@ -40,8 +43,8 @@ export class ServerApp {
 
     middlewares() {
 
-        this.app.use(cors());
         this.app.use(express.json());
+        this.app.use(cors());
         // this.app.use(express.static('public')); 
         this.app.use(fileUpload({
             useTempFiles: true,
@@ -51,11 +54,12 @@ export class ServerApp {
     }
 
     routes() {
-        // this.app.use(GeneralRoutes.User,UserRouter);
+        const mainRouter = new RouterCreator(this.io);
+        this.app.use('/api', mainRouter.getRouter());
     }
 
     sockets() {
-        // this.io.on('connection',(socket)=>socketsController(socket,this.io));
+        this.io.on('connection', (socket) => socketsController(socket, this.io));
     }
 
     listen() {
