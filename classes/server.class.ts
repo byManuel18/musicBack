@@ -1,5 +1,6 @@
 import { createServer, Server } from 'http';
 import { Server as ServerIO } from 'socket.io';
+import bodyParser from 'body-parser';
 
 import cors from 'cors';
 import express, { Express } from 'express';
@@ -43,8 +44,11 @@ export class ServerApp {
 
     middlewares() {
 
-        this.app.use(express.json());
         this.app.use(cors());
+        this.app.use(bodyParser.urlencoded({
+            extended: true,
+        }));
+        this.app.use(bodyParser.json());
         // this.app.use(express.static('public')); 
         this.app.use(fileUpload({
             useTempFiles: true,
