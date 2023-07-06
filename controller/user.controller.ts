@@ -29,8 +29,6 @@ export const register = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
-        console.log(error);
-
         return res.status(500).json({
             ok: false,
             msg: error
