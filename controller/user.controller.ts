@@ -45,6 +45,14 @@ export const login = async (req: I_UserRequest, res: Response) => {
             msg: 'Username and password do not match.'
         })
     }
+
+    if (!req.user.active) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'Inactive user.'
+        })
+    }
+
     if (!req.user.comparePasword(req.body.passWord)) {
         return res.status(404).json({
             ok: false,
