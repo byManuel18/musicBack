@@ -43,10 +43,10 @@ export const userNameValidator = async (userName: string, meta: Meta) => {
 
 export const passWordValidator = async (passWord: string, meta: Meta) => {
     if (!passWord) {
-        throw new Error('The passWord is mandatory');
+        throw new Error(`The ${meta.path} is mandatory`);
     }
     if (!AllValidators.default.isLength(passWord, { min: 6 })) {
-        throw new Error('The userName format is incorrect. Min 6');
+        throw new Error(`The ${meta.path} format is incorrect. Min 6`);
     }
 
     try {
@@ -59,5 +59,21 @@ export const passWordValidator = async (passWord: string, meta: Meta) => {
     } catch (error) {
         // throw new Error('The passWorld must be encrypter by RSA.');
     }
+
+}
+
+export const userNameOrEmailValidator = async (nameEmail: string, meta: Meta) => {
+    if (!nameEmail) {
+        throw new Error(`The ${meta.path} is mandatory`);
+    }
+
+    const userFind = await User.findOne({
+        $or: [
+            { userName: nameEmail },
+            { email: nameEmail }
+        ]
+    });
+
+    meta.req.user = userFind;
 
 }

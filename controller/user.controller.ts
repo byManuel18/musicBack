@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import { userActives } from './sockets.controller';
 import { User } from "../database/models";
 import { JWTUtils } from "../utils";
+import { I_UserRequest } from "../interfaces";
 
 // const userSocektId = userActives.filter(obj => obj.userId === '12345').map(obj => obj.socketId);
 //     if (userSocektId) {
@@ -35,4 +36,35 @@ export const register = async (req: Request, res: Response) => {
         })
     }
 
+}
+
+export const login = async (req: I_UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'Username and password do not match.'
+        })
+    }
+
+    if (!req.user.active) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'Inactive user.'
+        })
+    }
+
+    if (!req.user.comparePasword(req.body.passWord)) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'Username and password do not match.'
+        })
+    }
+
+    const { password, ...userFind } = req.user.toObject();
+    const token = JWTUtils.createJWT(userFind._id);
+
+    return res.json({
+        user: userFind,
+        token
+    })
 }

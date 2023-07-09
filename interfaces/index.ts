@@ -1,3 +1,4 @@
+export { I_UserRequest } from './userCustomRequest.interface';
 export { CustomSocket } from './customSocket.interface';
 export { I_Favorite } from './favorite.interface';
 export { I_Gender } from './gender.interface';
