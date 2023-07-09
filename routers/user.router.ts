@@ -4,15 +4,15 @@ import { UserController } from "../controller";
 import { DBValidators } from "../middlewares/inde";
 import { check } from "express-validator";
 import { I_UserRequest } from "../interfaces";
+import { validateJWT } from "../middlewares/validate-JWT";
 
 
 const UserRouters = {
     Register: '/register',
     Login: '/login',
+    Auto: '/checkConnected'
 } as const;
 
-
-DBValidators
 export const getUserRouter = (io: Server) => {
     const router: Router = Router();
 
@@ -28,6 +28,10 @@ export const getUserRouter = (io: Server) => {
         check('passWord').custom(DBValidators.passWordValidator),
         DBValidators.validarCampos
     ], (req: Request, res: Response) => { return UserController.login(req as I_UserRequest, res) });
+
+    router.get(UserRouters.Auto, [
+        (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next)
+    ], (req: Request, res: Response) => UserController.autoLogin(req as I_UserRequest, res));
 
     return router;
 }
