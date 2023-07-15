@@ -128,5 +128,32 @@ export const changePassword = async (req: I_UserRequest, res: Response) => {
     }
 }
 
+export const showImgProfile = (req: I_UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'User not Found'
+        })
+    }
+
+    const fileName = req.user.avatar;
+    const iduser = req.params.id;
+    let file;
+    if (fileName.toLowerCase().includes('default')) {
+        file = FileUtils.getFile(fileName, true, 'imgs')
+    } else {
+        file = FileUtils.getFile(fileName, false, 'userImgs', iduser);
+    }
+
+    if (file) {
+        return res.sendFile(file)
+    }
+
+    return res.status(500).json({
+        ok: false,
+        msg: 'Can Get IMG'
+    })
+}
+
 
 

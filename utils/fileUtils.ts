@@ -8,10 +8,13 @@ export const FilePaths = {
     GENERAL: 'upload',
     MUSIC: 'music',
     PLAYLIST: 'playlist',
-    USER: 'userImgs'
+    USER: 'userImgs',
+    ASSETS: 'assets',
+    DEF_IMGS: 'imgs'
 } as const;
 
 const MAIN_PATH: string = path.resolve(__dirname, '..', FilePaths.GENERAL);
+const ASSETS_PATH: string = path.resolve(__dirname, '..', FilePaths.ASSETS);
 
 export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof typeof FilePaths], finalPath: string) => {
     const finalPathComplete = path.resolve(MAIN_PATH, folderMain, finalPath);
@@ -40,4 +43,14 @@ export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof 
 const generarNombreUnico = (typeFile: string) => {
     const idUnico = uniqid();
     return `${idUnico}.${typeFile}`;
+}
+
+export const getFile = (name: string, isDefault: boolean, folderMain: typeof FilePaths[keyof typeof FilePaths], finalPath?: string) => {
+    const mainPath = isDefault ? ASSETS_PATH : MAIN_PATH;
+    const finalFilePath = path.resolve(mainPath, folderMain, finalPath ? finalPath : '', name);
+    if (fs.existsSync(finalFilePath)) {
+        return finalFilePath;
+    }
+
+    return null;
 }
