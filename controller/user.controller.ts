@@ -38,7 +38,7 @@ export const register = async (req: Request, res: Response) => {
 
 }
 
-export const login = async (req: I_UserRequest, res: Response) => {
+export const login = async (req: I_UserRequest, res: Response, autologin: boolean = false) => {
     if (!req.user) {
         return res.status(404).json({
             ok: false,
@@ -53,11 +53,13 @@ export const login = async (req: I_UserRequest, res: Response) => {
         })
     }
 
-    if (!req.user.comparePasword(req.body.passWord)) {
-        return res.status(404).json({
-            ok: false,
-            msg: 'Username and password do not match.'
-        })
+    if (!autologin) {
+        if (!req.user.comparePasword(req.body.passWord)) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Username and password do not match.'
+            })
+        }
     }
 
     const { password, ...userFind } = req.user.toObject();
@@ -67,4 +69,8 @@ export const login = async (req: I_UserRequest, res: Response) => {
         user: userFind,
         token
     })
+}
+
+export const autoLogin = (req: I_UserRequest, res: Response) => {
+    login(req, res, true);
 }
