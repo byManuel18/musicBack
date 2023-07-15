@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Server } from 'socket.io';
 import { UserController } from "../controller";
-import { DBValidators } from "../middlewares/inde";
+import { DBValidators, validateFile } from "../middlewares";
 import { check } from "express-validator";
 import { I_UserRequest } from "../interfaces";
 import { validateJWT } from "../middlewares/validate-JWT";
@@ -21,6 +21,7 @@ export const getUserRouter = (io: Server) => {
         check('userName').custom(DBValidators.userNameValidator),
         check('email').custom(DBValidators.emailValidator),
         check('passWord').custom(DBValidators.passWordValidator),
+        (req: Request, res: Response, next: any) => validateFile('image', 'imgProfile', req as I_UserRequest, res, next),
         DBValidators.validarCampos
     ], (req: Request, res: Response) => { return UserController.register(req, res) });
 
