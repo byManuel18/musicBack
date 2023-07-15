@@ -10,7 +10,8 @@ import { validateJWT } from "../middlewares/validate-JWT";
 const UserRouters = {
     Register: '/register',
     Login: '/login',
-    Auto: '/checkConnected'
+    Auto: '/checkConnected',
+    ChangePassword: '/changePassword'
 } as const;
 
 export const getUserRouter = (io: Server) => {
@@ -32,6 +33,13 @@ export const getUserRouter = (io: Server) => {
     router.get(UserRouters.Auto, [
         (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next)
     ], (req: Request, res: Response) => UserController.autoLogin(req as I_UserRequest, res));
+
+    router.put(UserRouters.ChangePassword, [
+        (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next),
+        check('oldPassword').custom(DBValidators.passWordValidator),
+        check('newPassword').custom(DBValidators.passWordValidator),
+        DBValidators.validarCampos
+    ], (req: Request, res: Response) => UserController.changePassword(req as I_UserRequest, res));
 
     return router;
 }

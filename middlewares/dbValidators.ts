@@ -52,7 +52,7 @@ export const passWordValidator = async (passWord: string, meta: Meta) => {
     try {
         const pass = await rsaDecrypt(passWord);
         if (pass) {
-            meta.req.body.passWord = pass;
+            meta.req.body[meta.path] = pass;
         } else {
             // throw new Error('The passWorld must be encrypter by RSA.');
         }
