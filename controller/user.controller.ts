@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Server } from 'socket.io';
 import { userActives } from './sockets.controller';
 import { User } from "../database/models";
-import { JWTUtils } from "../utils";
+import { JWTUtils, Password } from "../utils";
 import { I_UserRequest } from "../interfaces";
 
 // const userSocektId = userActives.filter(obj => obj.userId === '12345').map(obj => obj.socketId);
@@ -74,3 +74,43 @@ export const login = async (req: I_UserRequest, res: Response, autologin: boolea
 export const autoLogin = (req: I_UserRequest, res: Response) => {
     login(req, res, true);
 }
+
+export const changePassword = async (req: I_UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(404).json({
+            ok: false,
+            msg: 'User not Found'
+        })
+    }
+
+    if (req.user.comparePasword(req.body.newPassword)) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'Password cant be changed.'
+        });
+    }
+
+    if (req.user.comparePasword(req.body.oldPassword)) {
+        const newPassword = Password.encriptar(req.body.newPassword);
+        try {
+            await req.user.updateOne({ password: newPassword });
+            return res.status(200).json({
+                ok: true,
+                msg: 'Password change correct.'
+            })
+        } catch (error) {
+            return res.status(500).json({
+                ok: false,
+                msg: error
+            })
+        }
+    } else {
+        return res.status(401).json({
+            ok: false,
+            msg: 'Password cant be changed.'
+        })
+    }
+}
+
+
+

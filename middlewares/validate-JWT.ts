@@ -34,6 +34,13 @@ export const validateJWT = async (req: I_UserRequest, res: Response, next: any) 
             });
         }
 
+        if (!usuario.active) {
+            return res.status(401).json({
+                msg: 'Inactive User.',
+                ok: false
+            });
+        }
+
         req.user = usuario;
 
         next();
