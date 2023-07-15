@@ -16,7 +16,7 @@ export const FilePaths = {
 const MAIN_PATH: string = path.resolve(__dirname, '..', FilePaths.GENERAL);
 const ASSETS_PATH: string = path.resolve(__dirname, '..', FilePaths.ASSETS);
 
-export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof typeof FilePaths], finalPath: string) => {
+export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof typeof FilePaths], finalPath: string, oldFileName?: string) => {
     const finalPathComplete = path.resolve(MAIN_PATH, folderMain, finalPath);
     const typeFile = (file.mimetype.split('/'))[1];
 
@@ -26,6 +26,14 @@ export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof 
     }
 
     return new Promise<string>((resolve, reyect) => {
+        if (oldFileName) {
+            const oldPathFile = path.resolve(finalPathComplete, oldFileName);
+
+            if (fs.existsSync(oldPathFile)) {
+                console.log('2');
+                fs.rmSync(oldPathFile);
+            }
+        }
         const nameFile = generarNombreUnico(typeFile);
         const finalFilePath = path.resolve(finalPathComplete, nameFile);
         file.mv(finalFilePath, (err: any) => {
