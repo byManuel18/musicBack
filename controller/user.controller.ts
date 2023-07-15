@@ -151,8 +151,57 @@ export const showImgProfile = (req: I_UserRequest, res: Response) => {
 
     return res.status(500).json({
         ok: false,
-        msg: 'Can Get IMG'
+        msg: 'Cant Get IMG'
     })
+}
+
+export const updateImgProfile = async (req: I_UserRequest, res: Response) => {
+    if (!req.files || !req.files.imgProfile) {
+        return res.status(401).json({
+            ok: false,
+            msg: 'File missings'
+        })
+    }
+
+    try {
+        let oldImg;
+        if (!req.user?.avatar.toLowerCase().includes('default')) {
+            oldImg = req.user?.avatar;
+        }
+        const filePath = await FileUtils.saveFile(req.files.imgProfile as I_FileUpload, 'userImgs', req.user?.id, oldImg);
+
+        if (!filePath) {
+            return res.status(500).json({
+                ok: false,
+                msg: 'Cant Save Img'
+            })
+        }
+
+        const userUpdatedImg = await User.findByIdAndUpdate(
+            req.user?.id,
+            { $set: { avatar: filePath } },
+            { returnOriginal: false }
+        );
+
+        if (!userUpdatedImg) {
+            return res.status(401).json({
+                ok: false,
+                msg: 'User cant be updated'
+            })
+        }
+
+        return res.status(200).json({
+            ok: true,
+            newImg: filePath
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
+
 }
 
 

@@ -12,7 +12,8 @@ const UserRouters = {
     Login: '/login',
     Auto: '/checkConnected',
     ChangePassword: '/changePassword',
-    ImgProfile: '/img/:id'
+    ImgProfile: '/img/:id',
+    UpdateImg: '/imgUpdate'
 } as const;
 
 export const getUserRouter = (io: Server) => {
@@ -46,6 +47,12 @@ export const getUserRouter = (io: Server) => {
     router.get(UserRouters.ImgProfile, [
         (req: Request, res: Response, next: any) => FileValidators.canShowProfileImg(req as I_UserRequest, res, next)
     ], (req: Request, res: Response) => UserController.showImgProfile(req as I_UserRequest, res));
+
+    router.put(UserRouters.UpdateImg, [
+        (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next),
+        (req: Request, res: Response, next: any) => FileValidators.validateFile('image', 'imgProfile', req as I_UserRequest, res, next),
+    ],
+        (req: Request, res: Response) => UserController.updateImgProfile(req as I_UserRequest, res));
 
     return router;
 }
