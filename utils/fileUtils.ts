@@ -25,14 +25,9 @@ export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof 
         fs.mkdirSync(finalPathComplete);
     }
 
-    return new Promise<string>((resolve, reyect) => {
+    return new Promise<string>(async (resolve, reyect) => {
         if (oldFileName) {
-            const oldPathFile = path.resolve(finalPathComplete, oldFileName);
-
-            if (fs.existsSync(oldPathFile)) {
-                console.log('2');
-                fs.rmSync(oldPathFile);
-            }
+            await removeFile(path.resolve(finalPathComplete, oldFileName));
         }
         const nameFile = generarNombreUnico(typeFile);
         const finalFilePath = path.resolve(finalPathComplete, nameFile);
@@ -46,6 +41,21 @@ export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof 
     });
 
 
+}
+
+export const removeFile = (pathFile: string) => {
+    return new Promise<boolean>((resolve, reyect) => {
+        try {
+            if (fs.existsSync(pathFile)) {
+                fs.rmSync(pathFile);
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        } catch (error) {
+            resolve(false);
+        }
+    })
 }
 
 const generarNombreUnico = (typeFile: string) => {
