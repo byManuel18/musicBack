@@ -3,7 +3,8 @@ import { Server } from 'socket.io';
 import { userActives } from './sockets.controller';
 import { User } from "../database/models";
 import { JWTUtils, Password } from "../utils";
-import { I_UserRequest } from "../interfaces";
+import { I_FileUpload, I_UserRequest } from "../interfaces";
+import { FileUtils } from '../utils';
 
 // const userSocektId = userActives.filter(obj => obj.userId === '12345').map(obj => obj.socketId);
 //     if (userSocektId) {
@@ -19,7 +20,20 @@ export const register = async (req: Request, res: Response) => {
         const newUser = await User.create(
             { email: email, userName: userName, password: passWord },
         );
-        const { password, ...restUser } = newUser.toObject();
+
+        let userUpdatedImg;
+        if (req.files && req.files.imgProfile) {
+            const savedFile = await FileUtils.saveFile(req.files.imgProfile as I_FileUpload, 'userImgs', newUser.id);
+            if (savedFile) {
+                userUpdatedImg = await User.findByIdAndUpdate(
+                    newUser.id,
+                    { $set: { avatar: savedFile } },
+                    { returnOriginal: false }
+                );
+
+            }
+        }
+        const { password, ...restUser } = userUpdatedImg ? userUpdatedImg.toObject() : newUser.toObject();
 
         const token = JWTUtils.createJWT(newUser._id);
 
@@ -30,6 +44,8 @@ export const register = async (req: Request, res: Response) => {
         })
 
     } catch (error) {
+        console.log(error);
+
         return res.status(500).json({
             ok: false,
             msg: error

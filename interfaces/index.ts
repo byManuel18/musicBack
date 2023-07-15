@@ -1,3 +1,4 @@
+export { I_FileUpload } from './fileUpload';
 export { I_UserRequest } from './userCustomRequest.interface';
 export { CustomSocket } from './customSocket.interface';
 export { I_Favorite } from './favorite.interface';
