@@ -213,4 +213,20 @@ export const updateImgProfile = async (req: I_UserRequest, res: Response) => {
 }
 
 
+export const setInactiveUser = async (req: I_UserRequest, res: Response) => {
+    try {
+        await req.user?.updateOne({ $set: { active: false } }).exec();
+        return res.status(500).json({
+            ok: true,
+            msg: 'User Inactive Ok'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
+}
+
+
 
