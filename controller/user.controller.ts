@@ -33,7 +33,7 @@ export const register = async (req: Request, res: Response) => {
 
             }
         }
-        const { password, ...restUser } = userUpdatedImg ? userUpdatedImg.toObject() : newUser.toObject();
+        const { password, lastPassword, lastPasswordChange, ...restUser } = userUpdatedImg ? userUpdatedImg.toObject() : newUser.toObject();
 
         const token = JWTUtils.createJWT(newUser._id);
 
@@ -78,13 +78,21 @@ export const login = async (req: I_UserRequest, res: Response, autologin: boolea
         }
     }
 
-    const { password, ...userFind } = req.user.toObject();
-    const token = JWTUtils.createJWT(userFind._id);
+    try {
+        await req.user.updateOne({ $set: { lastLogin: new Date() } }).exec();
+        const { password, lastPassword, lastPasswordChange, ...userFind } = req.user.toObject();
+        const token = JWTUtils.createJWT(userFind._id);
 
-    return res.json({
-        user: userFind,
-        token
-    })
+        return res.json({
+            user: userFind,
+            token
+        })
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
 }
 
 export const autoLogin = (req: I_UserRequest, res: Response) => {
@@ -109,7 +117,7 @@ export const changePassword = async (req: I_UserRequest, res: Response) => {
     if (req.user.comparePasword(req.body.oldPassword)) {
         const newPassword = Password.encriptar(req.body.newPassword);
         try {
-            await req.user.updateOne({ password: newPassword });
+            await req.user.updateOne({ password: newPassword, lastPasswordChange: new Date(), lastPassword: req.user.password }).exec();
             return res.status(200).json({
                 ok: true,
                 msg: 'Password change correct.'
