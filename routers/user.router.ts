@@ -13,7 +13,8 @@ const UserRouters = {
     Auto: '/checkConnected',
     ChangePassword: '/changePassword',
     ImgProfile: '/img/:id',
-    UpdateImg: '/imgUpdate'
+    UpdateImg: '/imgUpdate',
+    SetInactive: '/deactivate'
 } as const;
 
 export const getUserRouter = (io: Server) => {
@@ -53,6 +54,11 @@ export const getUserRouter = (io: Server) => {
         (req: Request, res: Response, next: any) => FileValidators.validateFile('image', 'imgProfile', req as I_UserRequest, res, next),
     ],
         (req: Request, res: Response) => UserController.updateImgProfile(req as I_UserRequest, res));
+
+    router.put(UserRouters.SetInactive, [
+        (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next),
+    ],
+        (req: Request, res: Response) => UserController.setInactiveUser(req as I_UserRequest, res))
 
     return router;
 }
