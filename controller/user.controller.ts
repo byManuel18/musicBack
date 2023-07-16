@@ -229,4 +229,40 @@ export const setInactiveUser = async (req: I_UserRequest, res: Response) => {
 }
 
 
+export const removeImgProfile = async (req: I_UserRequest, res: Response) => {
+    try {
+
+        const fileName = req.user?.avatar;
+        if (fileName?.toLowerCase().includes('default')) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'There is no image to delete'
+            })
+        }
+
+        const deletdFile = await FileUtils.removeImgProfile(req.user?.id, fileName!);
+
+        if (deletdFile) {
+            const updatedUser = await req.user?.updateOne({ $set: { avatar: FileUtils.DEFAULT_IMG_PROGILE } }, { returnOriginal: false }).exec();
+            return res.status(200).json({
+                ok: true,
+                img: FileUtils.DEFAULT_IMG_PROGILE
+            })
+        }
+
+        return res.status(500).json({
+            ok: false,
+            msg: 'Image not removed'
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
+}
+
+
 
