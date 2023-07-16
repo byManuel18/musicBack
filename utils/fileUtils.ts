@@ -15,6 +15,7 @@ export const FilePaths = {
 
 const MAIN_PATH: string = path.resolve(__dirname, '..', FilePaths.GENERAL);
 const ASSETS_PATH: string = path.resolve(__dirname, '..', FilePaths.ASSETS);
+export const DEFAULT_IMG_PROGILE: string = 'imgUserDefault.png';
 
 export const saveFile = (file: I_FileUpload, folderMain: typeof FilePaths[keyof typeof FilePaths], finalPath: string, oldFileName?: string) => {
     const finalPathComplete = path.resolve(MAIN_PATH, folderMain, finalPath);
@@ -71,4 +72,10 @@ export const getFile = (name: string, isDefault: boolean, folderMain: typeof Fil
     }
 
     return null;
+}
+
+
+export const removeImgProfile = (userId: string, fileName: string) => {
+    const pathFile = path.resolve(MAIN_PATH, FilePaths.USER, userId, fileName);
+    return removeFile(pathFile);
 }

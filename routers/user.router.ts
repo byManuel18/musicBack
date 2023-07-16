@@ -14,7 +14,8 @@ const UserRouters = {
     ChangePassword: '/changePassword',
     ImgProfile: '/img/:id',
     UpdateImg: '/imgUpdate',
-    SetInactive: '/deactivate'
+    SetInactive: '/deactivate',
+    DeleteImg: '/img'
 } as const;
 
 export const getUserRouter = (io: Server) => {
@@ -58,7 +59,11 @@ export const getUserRouter = (io: Server) => {
     router.put(UserRouters.SetInactive, [
         (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next),
     ],
-        (req: Request, res: Response) => UserController.setInactiveUser(req as I_UserRequest, res))
+        (req: Request, res: Response) => UserController.setInactiveUser(req as I_UserRequest, res));
+
+    router.delete(UserRouters.DeleteImg, [
+        (req: Request, res: Response, next: any) => validateJWT(req as I_UserRequest, res, next),
+    ], (req: Request, res: Response) => UserController.removeImgProfile(req as I_UserRequest, res));
 
     return router;
 }
